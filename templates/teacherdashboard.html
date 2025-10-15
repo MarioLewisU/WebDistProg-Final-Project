@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Select</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container"></div>  
+<h2>{{ teacher.name }}'s Dashboard</h2>
+
+{% for course in classes %}
+  <h3>{{ course.name }}</h3>
+  <ul>
+    {% for student in course.students %}
+      <li>{{ student.name }} - Grades: {{ student.grades.get(course.name, []) }}</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Assign grade form -->
+  <form method="POST">
+    <input type="hidden" name="course_id" value="{{ course.course_id }}">
+    <select name="student_id">
+      {% for student in course.students %}
+        <option value="{{ student.student_id }}">{{ student.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="grade" step="0.1" placeholder="Enter grade">
+    <button type="submit">Submit Grade</button>
+  </form>
+{% endfor %}
+
+<form action="{{ url_for('index') }}" method="get" style="margin-top: 20px;">
+    <button type="submit">Go back to main page</button>
+</form>

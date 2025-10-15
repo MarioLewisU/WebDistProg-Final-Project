@@ -1,0 +1,222 @@
+/* ---------- Global Styles ---------- */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a; /* dark background */
+    color: #ffffff; /* default text white */
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------- Header Styles ---------- */
+h2, h3 {
+    color: #e60000; /* bold red headers */
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 2em;
+    border-bottom: 2px solid #e60000;
+    padding-bottom: 5px;
+}
+
+/* ---------- Lists ---------- */
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    background-color: #333333;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-left: 4px solid #e60000;
+    border-radius: 4px;
+}
+
+/* ---------- Forms & Inputs ---------- */
+form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 8px 10px;
+    border: 2px solid #e60000;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: #ff3333;
+}
+
+/* ---------- Buttons ---------- */
+button {
+    background-color: #e60000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #ff3333;
+    transform: scale(1.05);
+}
+
+/* ---------- Messages ---------- */
+.message {
+    color: #00ff00; /* green success */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.error {
+    color: #ff4d4d; /* red error */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ---------- Navigation / Main Menu Button ---------- */
+.return-button {
+    background-color: #000000;
+    color: #e60000;
+    border: 2px solid #e60000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.return-button:hover {
+    background-color: #e60000;
+    color: #ffffff;
+}
+
+/* ---------- Layout ---------- */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #262626;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #000000;
+}
+
+form.inline-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+a {
+    color: white;             /* default link color */
+    text-decoration: none;    /* optional: remove underline */
+}
+
+a:visited {
+    color: white;             /* visited links also white */
+}
+
+a:hover {
+    color: red;               /* hover effect */
+}
+
+
+/* For index page 
+/* Index Page Layout */
+body {
+    background-color: #0b0b0b;
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+h1 {
+    color: red;
+    margin-bottom: 40px;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column; /* make boxes stack vertically */
+    align-items: center; /* center them horizontally */
+    gap: 30px; /* space between boxes */
+    margin-top: 40px;
+}
+
+.menu-box {
+    display: block;
+    width: 300px; /* make them bigger horizontally */
+    padding: 20px;
+    background-color: #111;
+    color: #ff4444; /* red text */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.3em;
+    border: 2px solid #ff4444;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.menu-box:hover {
+    background-color: #ff4444;
+    color: white;
+    transform: scale(1.05);
+}
+
+.footer-text {
+    margin-top: 100px; /* move it further down */
+    font-size: 1em;
+    color: #ccc;
+    text-align: center;
+    font-style: italic;
+}
+
+.admin-container {
+    margin-top: 80px; /* shifts the whole dashboard down */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.message-container {
+    min-height: 40px;  /* keeps space for message even when empty */
+    margin-bottom: 10px;
+}
+
+.message {
+    background-color: #e6ffe6;
+    border: 1px solid #00b300;
+    color: #006600;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.message-placeholder {
+    visibility: hidden; /* keeps the space but hides text */
+}

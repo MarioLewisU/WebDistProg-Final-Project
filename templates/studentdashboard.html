@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ student.name }}'s Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>{{ student.name }}'s Dashboard</h2>
+
+    <h3>Current Classes</h3>
+    <ul>
+      {% for course in classes %}
+        <li>{{ course.name }} - Grades: {{ student.grades.get(course.name, []) }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3>GPA: {{ gpa }}</h3>
+
+    <!-- Add Class -->
+    <form method="POST" class="inline-form">
+      <label>Add Class:</label>
+      <select name="add_class">
+        {% for course in available_classes %}
+          <option value="{{ course.course_id }}">{{ course.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Add</button>
+    </form>
+
+    <!-- Drop Class -->
+    <form method="POST" class="inline-form">
+      <label>Drop Class:</label>
+      <select name="drop_class">
+        {% for course in classes %}
+          <option value="{{ course.course_id }}">{{ course.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Drop</button>
+    </form>
+
+    <!-- Return to Main Menu -->
+    <form action="{{ url_for('index') }}" method="get" style="margin-top: 20px;">
+        <button type="submit" class="return-button">Go back to main page</button>
+    </form>
+</div>
+</body>
+</html>
