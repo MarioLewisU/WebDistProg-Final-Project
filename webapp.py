@@ -4,12 +4,12 @@ from overview import Overview  # Your backend logic
 app = Flask(__name__)
 overview = Overview()  # Initialize your school data
 
-# --- Main Menu ---
+# index
 @app.route('/')
 def index():
     return render_template('index.html')  # Choose Admin, Teacher, or Student
 
-# --- Student Selection ---
+# student select
 @app.route('/student_select', methods=['GET', 'POST'])
 def student_select():
     if request.method == 'POST':
@@ -17,7 +17,7 @@ def student_select():
         return redirect(url_for('student_dashboard', student_id=student_id))
     return render_template('studentselect.html', students=overview.students)
 
-# --- Student Dashboard ---
+# student dashboard
 @app.route('/student_dashboard/<int:student_id>', methods=['GET', 'POST'])
 def student_dashboard(student_id):
     student = overview.find_student(student_id)
@@ -40,7 +40,7 @@ def student_dashboard(student_id):
                 course.remove_student(student)
         return redirect(url_for('student_dashboard', student_id=student_id))
 
-    # Gather classes, grades, GPA
+    
     student_classes = [course for course in overview.courses if student in course.students]
     available_classes = [course for course in overview.courses if student not in course.students]
     gpa = student.calculate_gpa()
@@ -48,7 +48,7 @@ def student_dashboard(student_id):
     return render_template('studentdashboard.html', student=student,
                            classes=student_classes, available_classes=available_classes, gpa=gpa)
 
-# --- Teacher Selection ---
+# teacher select
 @app.route('/teacher_select', methods=['GET', 'POST'])
 def teacher_select():
     if request.method == 'POST':
@@ -56,18 +56,17 @@ def teacher_select():
         return redirect(url_for('teacher_dashboard', teacher_id=teacher_id))
     return render_template('teacherselect.html', teachers=overview.teachers)
 
-# --- Teacher Dashboard ---
+# teacher dashboard
 @app.route('/teacher_dashboard/<int:teacher_id>', methods=['GET', 'POST'])
 def teacher_dashboard(teacher_id):
     teacher = overview.find_teacher(teacher_id)
     if not teacher:
         return "Teacher not found", 404
 
-    # Gather classes taught by teacher
+    
     teacher_classes = [course for course in overview.courses if course.teacher == teacher]
 
     if request.method == 'POST':
-        # Assign grade form submitted
         course_id = int(request.form.get('course_id'))
         student_id = int(request.form.get('student_id'))
         grade = float(request.form.get('grade'))
@@ -84,14 +83,19 @@ def teacher_dashboard(teacher_id):
     return render_template('teacherdashboard.html', teacher=teacher,
                            classes=teacher_classes)
 
-# --- Admin Selection ---
+# admin select
 @app.route('/admin_select', methods=['GET', 'POST'])
 def admin_select():
+    message = ""
     if request.method == 'POST':
-        # You could add a simple login check here, or just redirect
-        return redirect(url_for('admin_dashboard'))
-    return render_template('adminselect.html')
+        password = request.form.get('password')
+        if password == 'admin123':
+            return redirect(url_for('admin_dashboard'))
+        else:
+            message = "Incorrect password. Please try again."
+    return render_template('adminselect.html', message=message)
 
+# admin dashboard
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     message = ""

@@ -18,7 +18,7 @@
 
     <h3>GPA: {{ gpa }}</h3>
 
-    <!-- Add Class -->
+    
     <form method="POST" class="inline-form">
       <label>Add Class:</label>
       <select name="add_class">
@@ -29,7 +29,7 @@
       <button type="submit">Add</button>
     </form>
 
-    <!-- Drop Class -->
+    
     <form method="POST" class="inline-form">
       <label>Drop Class:</label>
       <select name="drop_class">
@@ -40,7 +40,7 @@
       <button type="submit">Drop</button>
     </form>
 
-    <!-- Return to Main Menu -->
+    
     <form action="{{ url_for('index') }}" method="get" style="margin-top: 20px;">
         <button type="submit" class="return-button">Go back to main page</button>
     </form>

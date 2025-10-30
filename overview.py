@@ -35,7 +35,7 @@ class Overview:
             Student(5, "Jeff Hardy")
         ]
 
-                #PRELOADED STUDENT CLASSES FOR MEMORY
+                #had ai preload some data
         self.students[0].add_class(self.courses[0])  # John Cena -> English 101
         self.courses[0].add_student(self.students[0])
         self.students[0].add_class(self.courses[1])  # John Cena -> Math 102
@@ -116,7 +116,11 @@ class Overview:
             position = input("Who will be using the portal today? (admin, teacher, student, or exit): ").lower()
 
             if position == "admin":
-                self.admin_menu()
+                password = input("Enter admin password: ")
+                if password == "admin123":
+                    self.admin_menu()
+                else:
+                    print("Access Denied. Please try again.")
 
             elif position == "teacher":
                 self.teacher_menu()
