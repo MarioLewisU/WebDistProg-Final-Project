@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
-from overview import Overview  # Your backend logic
+from overview import Overview  
+import sqlite3
+
 
 app = Flask(__name__)
 overview = Overview()  # Initialize your school data
@@ -7,7 +9,7 @@ overview = Overview()  # Initialize your school data
 # index
 @app.route('/')
 def index():
-    return render_template('index.html')  # Choose Admin, Teacher, or Student
+    return render_template('index.html')  
 
 # student select
 @app.route('/student_select', methods=['GET', 'POST'])
@@ -32,15 +34,36 @@ def student_dashboard(student_id):
             if course and student not in course.students:
                 student.add_class(course)
                 course.add_student(student)
+
+                with sqlite3.connect("school.db") as conn:
+                    cur = conn.cursor()
+                    cur.execute(
+                        "INSERT OR IGNORE INTO enrollments (student_id, course_id) VALUES (?, ?);",
+                        (student.student_id, course.course_id)
+                    )
+                    conn.commit()
+
         elif 'drop_class' in request.form:
             course_id = int(request.form.get('drop_class'))
             course = overview.find_class(course_id)
             if course and student in course.students:
                 student.drop_class(course)
                 course.remove_student(student)
+
+                with sqlite3.connect("school.db") as conn:
+                    cur = conn.cursor()
+                    cur.execute(
+                        "DELETE FROM enrollments WHERE student_id=? AND course_id=?;",
+                        (student.student_id, course.course_id)
+                    )
+                    cur.execute(
+                        "DELETE FROM grades WHERE student_id=? AND course_id=?;",
+                        (student.student_id, course.course_id)
+                    )
+                    conn.commit()
+
         return redirect(url_for('student_dashboard', student_id=student_id))
 
-    
     student_classes = [course for course in overview.courses if student in course.students]
     available_classes = [course for course in overview.courses if student not in course.students]
     gpa = student.calculate_gpa()
@@ -63,7 +86,6 @@ def teacher_dashboard(teacher_id):
     if not teacher:
         return "Teacher not found", 404
 
-    
     teacher_classes = [course for course in overview.courses if course.teacher == teacher]
 
     if request.method == 'POST':
@@ -77,6 +99,14 @@ def teacher_dashboard(teacher_id):
         if course and student:
             student.grades.setdefault(course.name, [])
             student.grades[course.name].append(grade)
+
+            with sqlite3.connect("school.db") as conn:
+                cur = conn.cursor()
+                cur.execute(
+                    "INSERT INTO grades (student_id, course_id, grade) VALUES (?, ?, ?);",
+                    (student.student_id, course.course_id, grade)
+                )
+                conn.commit()
 
         return redirect(url_for('teacher_dashboard', teacher_id=teacher_id))
 
@@ -100,7 +130,7 @@ def admin_select():
 def admin_dashboard():
     message = ""
     if request.method == 'POST':
-        print("Form Data:", request.form)  # Debug print
+        print("Form Data:", request.form)  
 
         try:
             action = request.form.get('action')
@@ -112,6 +142,16 @@ def admin_dashboard():
                 from models.student import Student
                 new_student = Student(student_id, name)
                 overview.students.append(new_student)
+
+                # Persist to DB
+                with sqlite3.connect("school.db") as conn:
+                    cur = conn.cursor()
+                    cur.execute(
+                        "INSERT OR IGNORE INTO students (id, name) VALUES (?, ?);",
+                        (new_student.student_id, new_student.name)
+                    )
+                    conn.commit()
+
                 message = f"Student {name} added and assigned ID {student_id}."
 
             elif action == "create_class":
@@ -120,6 +160,15 @@ def admin_dashboard():
                 from models.course import Course
                 new_course = Course(course_id, class_name)
                 overview.courses.append(new_course)
+
+                with sqlite3.connect("school.db") as conn:
+                    cur = conn.cursor()
+                    cur.execute(
+                        "INSERT OR IGNORE INTO courses (id, name, teacher_id) VALUES (?, ?, ?);",
+                        (new_course.course_id, new_course.name, None)
+                    )
+                    conn.commit()
+
                 message = f"Class {class_name} created."
 
             elif action == "add_student_class":
@@ -130,6 +179,15 @@ def admin_dashboard():
                 if student and course:
                     course.students.append(student)
                     student.add_class(course)
+
+                    with sqlite3.connect("school.db") as conn:
+                        cur = conn.cursor()
+                        cur.execute(
+                            "INSERT OR IGNORE INTO enrollments (student_id, course_id) VALUES (?, ?);",
+                            (student.student_id, course.course_id)
+                        )
+                        conn.commit()
+
                     message = f"{student.name} added to {course.name}."
                 else:
                     message = "Student or class not found."
@@ -142,6 +200,19 @@ def admin_dashboard():
                 if student and course and student in course.students:
                     course.students.remove(student)
                     student.drop_class(course)
+
+                    with sqlite3.connect("school.db") as conn:
+                        cur = conn.cursor()
+                        cur.execute(
+                            "DELETE FROM enrollments WHERE student_id=? AND course_id=?;",
+                            (student.student_id, course.course_id)
+                        )
+                        cur.execute(
+                            "DELETE FROM grades WHERE student_id=? AND course_id=?;",
+                            (student.student_id, course.course_id)
+                        )
+                        conn.commit()
+
                     message = f"{student.name} removed from {course.name}."
                 else:
                     message = "Student or class not found."
@@ -154,6 +225,15 @@ def admin_dashboard():
                 course = overview.find_class(course_id)
                 if student and course:
                     student.grades.setdefault(course.name, []).append(grade)
+
+                    with sqlite3.connect("school.db") as conn:
+                        cur = conn.cursor()
+                        cur.execute(
+                            "INSERT INTO grades (student_id, course_id, grade) VALUES (?, ?, ?);",
+                            (student.student_id, course.course_id, grade)
+                        )
+                        conn.commit()
+
                     message = f"Added grade {grade} for {student.name} in {course.name}."
                 else:
                     message = "Student or class not found."
